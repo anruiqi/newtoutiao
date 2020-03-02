@@ -7,26 +7,26 @@
         <div class="title">
           <img src="../../assets/img/logo_index.png" alt="">
         </div>
-        <!-- 表单组件 -->
-        <el-form style="margin-top:20px">
-         <!-- 表单容器 -->
-          <el-form-item>
-            <!-- 表单域 -->
-            <el-input placeholder="请输入手机号"></el-input>
+        <!-- 表单组件 绑定model数据 绑定rules属性  ref属性-->
+        <el-form ref="loginFrom" :model="loginForm" :rules='loginRules' style="margin-top:20px">
+         <!-- 表单容器 设置prop属性 -->
+          <el-form-item prop="mobile" >
+            <!-- 表单域   -->
+            <el-input v-model="loginForm.mobile"  placeholder="请输入手机号"></el-input>
           </el-form-item>
-          <!-- 验证码 -->
-          <el-form-item>
-            <el-input style="width:60%" placeholder="请输入验证码"></el-input>
+          <!-- 验证码 设置prop属性 -->
+          <el-form-item prop="code">
+            <el-input v-model="loginForm.code"  style="width:60%" placeholder="请输入验证码"></el-input>
             <!-- 发送验证码 -->
             <el-button style="float:right" plain>发送验证码</el-button>
           </el-form-item>
-          <!-- 勾选框 -->
-          <el-form-item>
-            <el-checkbox>我已阅读同意用户协议和隐私条款</el-checkbox>
+          <!-- 勾选框 设置prop属性-->
+          <el-form-item prop="checked">
+            <el-checkbox v-model="loginForm.checked">我已阅读同意用户协议和隐私条款</el-checkbox>
           </el-form-item>
           <!-- 登录按钮 -->
           <el-form-item>
-            <el-button type="primary" style="width:100%">登录</el-button>
+            <el-button @click="login" type="primary" style="width:100%">登录</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -35,7 +35,50 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      // 登录表单的数据
+      loginForm: {
+        mobile: '', // 手机号
+        code: '', // 验证码
+        checked: false // 是否同协议
+      },
+      // 表单的验证规则
+      loginRules: {
+        mobile: [{ required: true, message: '手机号不能为空' }, {
+          pattern: /^1(3|4|5|7|8)\d{9}$/, // 手机正则
+          message: '格式不正确'
+        }], // 手机号
+        code: [{ required: true, message: '验证码不能为空' }, {
+          pattern: /^\d{6}$/, // 正则
+          message: '格式不正确'
+        }], // 验证码
+        checked: [{
+          validator: function (rule, value, callback) {
+            value ? callback() : callback(new Error('同意协议'))
+          }
+        }] // 是否同意
+      }
+    }
+  },
+  methods: {
+    login () {
+      // 获取el-form对象实例
+      //    this.$refs.loginForm 获取的就是el-form的对象实例
+      // 第一种 回调函数 isOK, fields(没有校验通过的字段)
+      // this.$refs.loginForm.validate(function (isOK) {
+      //   if (isOK) {
+      //     console.log('校验通过')
+      //   } else {
+      //     console.log('校验未通过')
+      //   }
+      // }) // 方法
+      // 第二种 promise
+      this.$refs.loginForm.validate().then(() => {
+        // 校验成功就传到 then
+      }) // 方法
+    }
+  }
 }
 </script>
 
