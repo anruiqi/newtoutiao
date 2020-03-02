@@ -1,7 +1,20 @@
 <template>
-  <div>
-      <span>123</span>
-  </div>
+  <!-- 先放一个大容器  小容器只能放在大容器里-->
+  <el-container>
+    <!-- 左侧导航区域 -->
+    <el-aside></el-aside>
+    <!-- 右侧区域 -->
+    <el-container>
+      <!-- 顶部 -->
+      <el-header>
+      </el-header>
+      <!-- 内容区域 -->
+      <el-main>
+        <!-- 二级路由容器 -->
+        <router-view></router-view>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
