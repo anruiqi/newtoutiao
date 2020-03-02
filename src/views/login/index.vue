@@ -76,7 +76,17 @@ export default {
       // 第二种 promise
       this.$refs.loginForm.validate().then(() => {
         // 校验成功就传到 then
-      }) // 方法
+        this.$axios({
+          url: '/authorizations', // 请求地址
+          data: this.loginForm,
+          method: 'post'
+        }).then(result => {
+          // 成功 之后打印结果
+          console.log(result.data)
+        }).catch(() => {
+
+        })
+      })
     }
   }
 }
