@@ -84,7 +84,8 @@ export default {
           // 成功 之后打印结果
           console.log(result.data)
         }).catch(() => {
-
+          // 提示消息
+          this.$message.error('用户名或者密码错误')
         })
       })
     }
