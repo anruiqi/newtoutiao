@@ -8,7 +8,7 @@
           <img src="../../assets/img/logo_index.png" alt="">
         </div>
         <!-- 表单组件 绑定model数据 绑定rules属性  ref属性-->
-        <el-form ref="loginFrom" :model="loginForm" :rules='loginRules' style="margin-top:20px">
+        <el-form ref="loginForm" :model="loginForm" :rules='loginRules' style="margin-top:20px">
          <!-- 表单容器 设置prop属性 -->
           <el-form-item prop="mobile" >
             <!-- 表单域   -->
@@ -64,8 +64,8 @@ export default {
   methods: {
     login () {
       // 获取el-form对象实例
-      //    this.$refs.loginForm 获取的就是el-form的对象实例
-      // 第一种 回调函数 isOK, fields(没有校验通过的字段)
+      //  this.$refs.loginForm 获取的就是el-form的对象实例
+      // 第一种
       // this.$refs.loginForm.validate(function (isOK) {
       //   if (isOK) {
       //     console.log('校验通过')
@@ -82,7 +82,8 @@ export default {
           method: 'post'
         }).then(result => {
           // 成功 之后打印结果
-          console.log(result.data)
+          window.localStorage.setItem('user-token', result.data.data.token)
+          this.$router.push('/home')
         }).catch(() => {
           // 提示消息
           this.$message.error('用户名或者密码错误')
