@@ -1,0 +1,53 @@
+<template>
+      <!-- elemenyUI组件 -->
+      <el-row class='layout-header' type='flex' align="middle">
+          <el-col class='left' :span="12">
+              <!-- 图标 -->
+              <i class='el-icon-s-fold'></i>
+              <span>江苏传智播客</span>
+          </el-col>
+          <!-- 右侧列 -->
+          <el-col class="right " :span="12">
+              <!-- 再放一个组件 -->
+              <el-row type='flex' justify="end" align="middle">
+                <img src="http://image.biaobaiju.com/uploads/20180802/00/1533141613-nAaEcljMew.jpeg" alt="">
+                <!-- 下拉菜单 -->
+                <el-dropdown trigger='click' @command="clickMenu">
+               <!-- 显示的内容 -->
+               <span>anruiq</span>
+                <!-- 下拉内容需要做具名插槽dropdown  el-dropdown-menu是专门做下拉的组件 -->
+                <el-dropdown-menu slot="dropdown" >
+                   <!-- 下拉选项 el-dropdown-item 作为下拉选项组件  给每一个选项一个command属性-->
+                    <el-dropdown-item command="info">个人信息</el-dropdown-item>
+                    <el-dropdown-item command="git">git地址</el-dropdown-item>
+                    <el-dropdown-item command="lgout">退出</el-dropdown-item>
+                </el-dropdown-menu>
+           </el-dropdown>
+              </el-row>
+          </el-col>
+      </el-row>
+</template>
+
+<script>
+export default {
+
+}
+</script>
+
+<style lang='less' scoped>
+    .layout-header {
+        height: 60px;
+        .left {
+            i {
+                font-size: 20px;
+            }
+        }
+        .right {
+            img {
+                width:40px;
+                height:40px;border-radius: 50%;
+                margin-right: 4px;
+            }
+        }
+    }
+</style>

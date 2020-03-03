@@ -2,9 +2,7 @@
   <!-- 先放一个大容器  小容器只能放在大容器里-->
   <el-container>
     <!-- 左侧导航区域 -->
-    <el-aside>
       <layout-aside></layout-aside>
-    </el-aside>
     <!-- 右侧区域 -->
     <el-container>
       <!-- 顶部 -->
@@ -24,16 +22,13 @@
 </template>
 
 <script>
-import LayoutAside from '@/components/home/layout-aside'
-import LayoutHeader from '@/components/home/layout-header'
 export default {
-  components: {
-    'layout-aside': LayoutAside,
-    'layout-header': LayoutHeader
-  }
 }
 </script>
 
 <style>
-
+.el-aside {
+  width: 230px;
+  background-color: #000;
+}
 </style>
