@@ -27,8 +27,4 @@ export default {
 </script>
 
 <style>
-.el-aside {
-  width: 230px;
-  background-color: #000;
-}
 </style>
