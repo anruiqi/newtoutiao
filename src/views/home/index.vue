@@ -11,7 +11,7 @@
        <layout-header></layout-header>
       </el-header>
       <!-- 内容区域 -->
-      <el-main>
+      <el-main style="padding: 0">
         <!-- 二级路由容器 -->
         <router-view>
           内容
