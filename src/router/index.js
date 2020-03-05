@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '@/views/home' // 用一种简写的方式，代替
+// 用一种简写的方式，代替
+import Home from '@/views/home'
 import Login from '@/views/login'
 import SecondHome from '@/views/home/second_home'
 Vue.use(VueRouter)
@@ -8,7 +9,8 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home' // 强制跳转
+    // 强制跳转
+    redirect: '/home'
   },
   {
     path: '/home',
@@ -18,7 +20,13 @@ const routes = [
     children: [
       {
         path: '',
-        component: SecondHome // 默认二级路由组件
+        // 默认二级路由组件
+        component: SecondHome
+      }, {
+        // 评论列表地址
+        path: 'comment',
+        // 按需加载
+        component: () => import('@/views/comment')
       }
     ]
   },
