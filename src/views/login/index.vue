@@ -63,17 +63,6 @@ export default {
   },
   methods: {
     login () {
-      // 获取el-form对象实例
-      //  this.$refs.loginForm 获取的就是el-form的对象实例
-      // 第一种
-      // this.$refs.loginForm.validate(function (isOK) {
-      //   if (isOK) {
-      //     console.log('校验通过')
-      //   } else {
-      //     console.log('校验未通过')
-      //   }
-      // }) // 方法
-      // 第二种 promise
       this.$refs.loginForm.validate().then(() => {
         // 校验成功就传到 then
         this.$axios({

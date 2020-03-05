@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 // 封装请求工具 request.js
 import axios from 'axios'
+import router from '@/router'
 // 拦截器
 // 配置axios的baseURL
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0' // 配置公共的请求头地址
@@ -17,10 +18,17 @@ axios.interceptors.request.use(function (config) {
 })
 
 // 响应拦截器
-axios.interceptors.response.use(function () {
+axios.interceptors.response.use(function (response) {
   // 成功时执行
   return response.data ? response.data : {}
-}, function () {
+}, function (error) {
   // 失败时执行
+  // 删除钥匙
+  if (error.response.status === 401) {
+    localStorage.removeItem('user-token')
+    // 返回登录页
+    router.push('/login')
+  }
+  return Promise.reject(error)
 })
 export default axios
