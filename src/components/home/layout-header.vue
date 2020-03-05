@@ -58,7 +58,7 @@ export default {
       url: '/user/profile'
     }).then(result => {
       // 如果加载成功将数据赋值给 userInfo
-      this.userInfo = result.data.data
+      this.userInfo = result.data
     })
   }
 }
