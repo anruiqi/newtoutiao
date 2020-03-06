@@ -1,5 +1,5 @@
 <template>
-    <el-card>
+    <el-card v-loading="loading">
         <bread-crumb slot='header'>
            <template slot="title">
                评论管理
@@ -42,7 +42,9 @@ export default {
       },
       list: [
 
-      ]
+      ],
+      // 控制loading遮罩层的显示和隐藏
+      loading: false
     }
   },
   methods: {
@@ -54,6 +56,8 @@ export default {
     },
     //   获取评论
     getComment () {
+      // 打开遮罩层
+      this.loading = true
       this.$axios({
         // 请求地址
         url: '/articles',
@@ -68,6 +72,8 @@ export default {
         // 返回的结果
         this.list = result.data.results
         this.page.total = result.data.total_count
+        // 请求完毕 关闭遮罩层
+        this.loading = false
       })
     },
     // 格式化函数
