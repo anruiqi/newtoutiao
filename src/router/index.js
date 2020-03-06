@@ -27,6 +27,10 @@ const routes = [
         path: 'comment',
         // 按需加载
         component: () => import('@/views/comment')
+      }, {
+        // 二级路由地址
+        path: 'material',
+        component: () => import('@/views/material')
       }
     ]
   },
