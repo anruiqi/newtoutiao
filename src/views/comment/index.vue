@@ -63,8 +63,8 @@ export default {
           // 请求类型
           method: 'put',
           params: {
-            // 获取评论id
-            article_id: row.id
+            // 获取评论id 将BigNumber类型转换成字符串
+            article_id: row.id.toString()
           },
           data: {
             // 状态是 打开还是关闭
