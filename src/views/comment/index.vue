@@ -18,6 +18,12 @@
               </template>
             </el-table-column>
         </el-table>
+        <!-- 分页组件 -->
+        <el-row style="height:80px" type='flex' align="middle" justify="end">
+
+          <el-pagination  background layout="prev, pager, next" :current-page="page.currentPage" :total="page.total" @current-change="changePage"></el-pagination>
+        </el-row>
+
     </el-card>
 </template>
 
@@ -25,23 +31,43 @@
 export default {
   data () {
     return {
+      // 分页草书单独放置一个对象 让数据更清晰
+      page: {
+        // 默认总数
+        total: 0,
+        // 默认页码
+        currentPage: 1,
+        // 每页显示的数据总数
+        pageSize: 10
+      },
       list: [
 
       ]
     }
   },
   methods: {
+    // 页码改变时间
+    changePage (newPage) {
+      this.page.currentPage = newPage
+      // 重新获取评论数据
+      this.getComment()
+    },
     //   获取评论
     getComment () {
       this.$axios({
         // 请求地址
         url: '/articles',
         params: {
-          response_type: 'comment'
+          response_type: 'comment',
+          // 查询第一页
+          page: this.page.currentPage,
+          // 查询几条
+          per_page: this.page.pageSize
         }
       }).then(result => {
         // 返回的结果
         this.list = result.data.results
+        this.page.total = result.data.total_count
       })
     },
     // 格式化函数
