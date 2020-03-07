@@ -31,6 +31,9 @@ const routes = [
         // 二级路由地址
         path: 'material',
         component: () => import('@/views/material')
+      }, {
+        path: 'articles',
+        component: () => import('@/views/articles')
       }
     ]
   },
