@@ -35,6 +35,19 @@
              </div>
          </el-tab-pane>
      </el-tabs>
+     <!-- 分页组件 -->
+     <el-row type='flex' justify="center" style='height:80px' align="middle">
+       <!-- 放置分页组件 -->
+       <el-pagination background
+       :total="page.total"
+       :current-page="page.currentPage"
+       :page-size="pageSize"
+       layout="prev, pager, next"
+       @current-change="changePage"
+       >
+
+       </el-pagination>
+     </el-row>
  </el-card>
 </template>
 
@@ -45,10 +58,24 @@ export default {
       // 当前激活的页签 默认选中的素材
       activeName: 'all',
       // 全部素材的数据 和收藏的数据
-      list: []
+      list: [],
+      page: {
+        // 默认页数
+        currentPage: 1,
+        // 当前总数
+        total: 0,
+        // 每页多少条
+        pageSize: 10
+      }
     }
   },
   methods: {
+    changePage (newPage) {
+      // 将页码复制个页码数据
+      this.page.currentPage = newPage
+      // 获取数据
+      this.getMaterial()
+    },
     // 获取素材数据
     getMaterial () {
       this.axios({
@@ -57,7 +84,11 @@ export default {
         // get 参数 也就是query参数
         params: {
           // 获取不是收藏的数据 获取全部收藏数据
-          collect: this.activeName === 'collect'
+          collect: this.activeName === 'collect',
+          // 取页码变量中的值 只要页码变量一遍 获取的数据也变
+          page: this.page.currentPage,
+          // 获取每页数量
+          per_page: this.page.pageSize
         },
         // data参数 放的是body参数
         data: {}
@@ -67,9 +98,11 @@ export default {
       })
     },
     chengeTab () {
+      // 将页码重置成第一页
+      this.page.currentPage = 1
       // 切换事件
       // 可已根据activeName决定获取哪方面的数据
-    // 直接调用获取素材的方法
+      // 直接调用获取素材的方法
       this.getMaterial()
     }
   },
