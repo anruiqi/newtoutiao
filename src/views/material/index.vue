@@ -6,16 +6,33 @@
              素材管理
          </template>
      </bread-crumb>
-     <!-- 放置标签页 -->
-     <el-tabs v-model="activeName">
+     <!-- 放置标签页 切换tabs页签的时候需要进行事件的监听 -->
+     <el-tabs v-model="activeName" @tab-click="changeTab">
          <!-- 放置标签 label表示标签显示的名称 name 代表页签选中的值-->
          <el-tab-pane label="全部素材" name='all'>
-             <!-- 内容 -->
-             全部素材
+             <!-- 内容  生成页面结构 -->
+             <div class="img-list">
+                 <!-- 对数据进行循环 -->
+                 <el-card v-for="item in list" :key="item.id">
+                     <!-- 放置图片 并赋值图片地址 -->
+                     <img :src="item.url" alt="">
+                     <!-- 操作栏 -->
+                     <el-row class='operate' type='flex' align="middle" justify="space-around">
+                         <i class='el-icon-star-on'></i>
+                         <i class='el-icon-delete-solid'></i>
+                     </el-row>
+                 </el-card>
+             </div>
          </el-tab-pane>
          <el-tab-pane label="收藏素材" name='collect'>
              <!-- 内容 -->
-             收藏素材
+              <div class="img-list">
+                 <!-- 对数据进行循环 -->
+                 <el-card v-for="item in list" :key="item.id">
+                     <!-- 放置图片 并赋值图片地址 -->
+                     <img :src="item.url" alt="">
+                 </el-card>
+             </div>
          </el-tab-pane>
      </el-tabs>
  </el-card>
@@ -26,12 +43,68 @@ export default {
   data () {
     return {
       // 当前激活的页签 默认选中的素材
-      activeName: 'all'
+      activeName: 'all',
+      // 全部素材的数据 和收藏的数据
+      list: []
     }
+  },
+  methods: {
+    // 获取素材数据
+    getMaterial () {
+      this.axios({
+        // 请求地址
+        url: '/user/images',
+        // get 参数 也就是query参数
+        params: {
+          // 获取不是收藏的数据 获取全部收藏数据
+          collect: this.activeName === 'collect'
+        },
+        // data参数 放的是body参数
+        data: {}
+      }).then(result => {
+        // 将返回的数据 赋值到data中
+        this.list = result.data.results
+      })
+    },
+    chengeTab () {
+      // 切换事件
+      // 可已根据activeName决定获取哪方面的数据
+    // 直接调用获取素材的方法
+      this.getMaterial()
+    }
+  },
+  created () {
+    // 获取素材
+    this.getMaterial()
   }
 }
 </script>
 
-<style>
-
+<style lang='less' scoped>
+ .img-list {
+     display: flex;
+     flex-wrap:wrap;
+     justify-content: center;
+     .img-card {
+         width: 220px;
+         height: 240px;
+         margin: 20px 40px;
+         position: relative;
+         img {
+             width: 100%;
+             height: 100%;
+         }
+         .operate {
+             position: absolute;
+             left:0;
+             bottom:0;
+             width: 100%;
+             background: #f4f5f6;
+             height: 30px;
+             i {
+                 font-size: 20px;
+             }
+         }
+     }
+ }
 </style>
