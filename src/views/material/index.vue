@@ -1,3 +1,4 @@
+/* eslint-disable vue/valid-v-for */
 <template>
  <el-card>
      <!-- 放置面包屑 -->
@@ -20,9 +21,9 @@
              <!-- 内容  生成页面结构 -->
              <div class="img-list">
                  <!-- 对数据进行循环 -->
-                 <el-card class="img-card" v-for="item in list" :key="item.id">
+                 <el-card class="img-card" v-for="(item,index) in list" :key="item.id">
                      <!-- 放置图片 并赋值图片地址 -->
-                     <img :src="item.url" alt="">
+                     <img :src="item.url" alt="" @click="selectImg(index)">
                      <!-- 操作栏 -->
                      <el-row class='operate' type='flex' align="middle" justify="space-around">
                          <!-- 注册点击事件-->
@@ -36,9 +37,9 @@
              <!-- 内容 -->
               <div class="img-list">
                  <!-- 对数据进行循环 -->
-                 <el-card class="img-card" v-for="item in list" :key="item.id">
+                 <el-card class="img-card" v-for="(item,index) in list" :key="item.id">
                      <!-- 放置图片 并赋值图片地址 -->
-                     <img :src="item.url" alt="">
+                     <img :src="item.url" alt="" @click="selectImg(index)">
                  </el-card>
              </div>
          </el-tab-pane>
@@ -53,9 +54,18 @@
        layout="prev, pager, next"
        @current-change="changePage"
        >
-
        </el-pagination>
      </el-row>
+     <!-- 放置el-dialog组件 -->
+     <el-dialog @opened="openEnd" :visible="dialogVisible" @close="dialogVisible = false">
+       <el-carousel ref="myCarousel" indicator-position="outside" height="400px">
+         <!-- 放置换的灯片 -->
+         <el-carousel-item v-for="item in list" :key="item.id">
+            <!-- 放置图片 -->
+            <img style="width:100%;height:100%;" :src="item.url" alt="">
+         </el-carousel-item>
+       </el-carousel>
+     </el-dialog>
  </el-card>
 </template>
 
@@ -73,11 +83,24 @@ export default {
         // 当前总数
         total: 10,
         // 每页多少条
-        pageSize: 3
-      }
+        pageSize: 10
+      },
+      // 控制显示和隐藏
+      dialogVisible: false,
+      // 点击索引
+      clickIndex: -1
     }
   },
   methods: {
+    openEnd () {
+      this.$refs.myCarousel.setActiveItem(this.clickIndex)
+    },
+    selectImg (index) {
+      // 将索引赋值
+      this.clickIndex = index
+      // 打开索引
+      this.dialogVisible = true
+    },
     // 取消或收藏素材方法
     collectOrCancel (row) {
       this.$axios({
