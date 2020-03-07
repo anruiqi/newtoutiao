@@ -6,6 +6,14 @@
              素材管理
          </template>
      </bread-crumb>
+     <!-- 上传图片组件 -->
+     <el-row type='flex' justify="end">
+        <el-upload :http-request="uploadImg" action="">
+            <!-- 点击内容就会弹出选中文件 -->
+            <el-button size="small" type="primary">上传素材</el-button>
+         </el-upload>
+     </el-row>
+
      <!-- 放置标签页 切换tabs页签的时候需要进行事件的监听 -->
      <el-tabs v-model="activeName" @tab-click="changeTab">
          <!-- 放置标签 label表示标签显示的名称 name 代表页签选中的值-->
@@ -13,7 +21,7 @@
              <!-- 内容  生成页面结构 -->
              <div class="img-list">
                  <!-- 对数据进行循环 -->
-                 <el-card v-for="item in list" :key="item.id">
+                 <el-card class="img-card" v-for="item in list" :key="item.id">
                      <!-- 放置图片 并赋值图片地址 -->
                      <img :src="item.url" alt="">
                      <!-- 操作栏 -->
@@ -70,6 +78,28 @@ export default {
     }
   },
   methods: {
+    uploadImg (params) {
+      // params.file 就是需要上传的文件
+      // 实例化一个FormData对象
+      const data = new FormData()
+      // 加入文件参数
+      data.append('image', params.file)
+      // 发送上传请求
+      this.$axios({
+        // 请求地址
+        url: '/user/images',
+        // 类型
+        method: 'post',
+        data
+      }).then(() => {
+        // 成功
+        // 重新拉取数据
+        this.getMaterial()
+      }).catch(() => {
+        // 失败
+        this.$message.error('上传失败')
+      })
+    },
     changePage (newPage) {
       // 将页码复制个页码数据
       this.page.currentPage = newPage
@@ -78,7 +108,7 @@ export default {
     },
     // 获取素材数据
     getMaterial () {
-      this.axios({
+      this.$axios({
         // 请求地址
         url: '/user/images',
         // get 参数 也就是query参数
