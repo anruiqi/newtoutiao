@@ -1,6 +1,6 @@
 <template>
 <!-- 面包屑  -->
-  <el-card>
+  <el-card class="articles">
       <bread-crumb slot='header'>
        <template slot='title'>文章列表</template>
       </bread-crumb>
@@ -30,6 +30,27 @@
               <el-date-picker v-model="searchForm.dateRange" type='daterange'></el-date-picker>
           </el-form-item>
       </el-form>
+      <!-- 主体结构 -->
+      <el-row class="total" type="flex" align="middle">
+          <span>找到快快快</span>
+      </el-row>
+      显示数据
+      <div class="article-item" v-for="item in 200" :key="item">
+          <!-- 左侧内容 -->
+          <div class="left">
+              <img src="http://t8.baidu.com/it/u=1484500186,1503043093&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1584195847&t=0ac2ff76030c52d577318c55b148ac9f" alt="">
+              <div class="info">
+                <span>123</span>
+                <el-tag class="tag">已发表</el-tag>
+                <span class="date">131:51651</span>
+              </div>
+          </div>
+          <!-- 右侧内容 -->
+          <div class="right">
+              <span><i class="el-icon-edit"></i>修改</span>
+              <span><i class="el-icon-delete"></i>删除</span>
+          </div>
+      </div>
   </el-card>
 </template>
 
@@ -68,6 +89,49 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang='less' scoped>
+    .articles {
+        .total {
+            height: 60px;
+            border-bottom: 1px solid #ccc;
+        }
+        // 对文章循环 进行样式编写
+        .article-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 0;
+            border-bottom: 1px solid #ccc;
+            .left {
+                display: flex;
+                img {
+                    width: 180px;
+                    height: 100px;
+                    border-radius: 4px;
+                }
+                .info {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100px;
+                    justify-content: space-around;
+                    margin-left: 10px;
+                    .date {
+                        color: #999;
+                        font-size: 12px;
+                    }
+                    .tag {
+                        width: 60px;
+                        text-align: center;
+                    }
+                }
+            }
+            .right {
+                span {
+                    font-size: 12px;
+                    margin-right: 8px;
+                    cursor: pointer;
+                    user-select: none;
+                }
+            }
+        }
+    }
 </style>
