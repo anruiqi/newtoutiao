@@ -8,12 +8,11 @@
      </bread-crumb>
      <!-- 上传图片组件 -->
      <el-row type='flex' justify="end">
-        <el-upload :http-request="uploadImg" action="">
+        <el-upload :show-file-list="false" :http-request="uploadImg" action="">
             <!-- 点击内容就会弹出选中文件 -->
             <el-button size="small" type="primary">上传素材</el-button>
          </el-upload>
      </el-row>
-
      <!-- 放置标签页 切换tabs页签的时候需要进行事件的监听 -->
      <el-tabs v-model="activeName" @tab-click="changeTab">
          <!-- 放置标签 label表示标签显示的名称 name 代表页签选中的值-->
@@ -26,8 +25,9 @@
                      <img :src="item.url" alt="">
                      <!-- 操作栏 -->
                      <el-row class='operate' type='flex' align="middle" justify="space-around">
-                         <i class='el-icon-star-on'></i>
-                         <i class='el-icon-delete-solid'></i>
+                         <!-- 注册点击事件-->
+                         <i @click="collectOrCancel(item)" :style="{color: item.is_collected ? 'red' : 'black'}" class='el-icon-star-on'></i>
+                         <i @click="delMaterial(item)" class='el-icon-delete-solid'></i>
                      </el-row>
                  </el-card>
              </div>
@@ -36,7 +36,7 @@
              <!-- 内容 -->
               <div class="img-list">
                  <!-- 对数据进行循环 -->
-                 <el-card v-for="item in list" :key="item.id">
+                 <el-card class="img-card" v-for="item in list" :key="item.id">
                      <!-- 放置图片 并赋值图片地址 -->
                      <img :src="item.url" alt="">
                  </el-card>
@@ -49,7 +49,7 @@
        <el-pagination background
        :total="page.total"
        :current-page="page.currentPage"
-       :page-size="pageSize"
+       :page-size="page.pageSize"
        layout="prev, pager, next"
        @current-change="changePage"
        >
@@ -71,13 +71,50 @@ export default {
         // 默认页数
         currentPage: 1,
         // 当前总数
-        total: 0,
+        total: 10,
         // 每页多少条
-        pageSize: 10
+        pageSize: 3
       }
     }
   },
   methods: {
+    // 取消或收藏素材方法
+    collectOrCancel (row) {
+      this.$axios({
+        // 、、请求类型
+        method: 'put',
+        // 请求地址
+        url: `/user/images/${row.id}`,
+        // 放置body参数
+        data: {
+          collect: !row.is_collected
+        }
+      }).then(() => {
+        // 成功 从新加载数据
+        this.getMaterial()
+      }).catch(() => {
+        // 失败
+        this.$message.error('操作失败')
+      })
+    },
+    // 删除素材方法
+    delMaterial (row) {
+      this.$confirm('确定删除！', '提示').then(() => {
+        this.$axios({
+        // 、、请求类型
+          method: 'delete',
+          // 请求地址
+          url: `/user/images/${row.id}`
+        }).then(() => {
+        // 成功 从新加载数据
+          this.getMaterial()
+        }).catch(() => {
+        // 失败
+          this.$message.error('操作失败')
+        })
+      })
+    },
+    // 上传文件组件方法
     uploadImg (params) {
       // params.file 就是需要上传的文件
       // 实例化一个FormData对象
@@ -127,7 +164,7 @@ export default {
         this.list = result.data.results
       })
     },
-    chengeTab () {
+    changeTab () {
       // 将页码重置成第一页
       this.page.currentPage = 1
       // 切换事件
