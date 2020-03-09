@@ -49,7 +49,7 @@
           <!-- 右侧内容 -->
           <div class="right">
               <span><i class="el-icon-edit"></i>修改</span>
-              <span><i class="el-icon-delete"></i>删除</span>
+                        <span @click="delMaterial(item.id.toString())"><i class="el-icon-delete"></i> 删除</span>
           </div>
       </div>
        <!-- 放置分页组件 -->
@@ -90,8 +90,8 @@ export default {
       },
       //  专门接收频道数据
       channels: [],
-
-      list: [], // 获取文章列表数据
+      // 获取文章列表数据
+      list: [],
       defaultImg: require('../../assets/img/adsadsad.jpg')
     }
   },
@@ -101,8 +101,10 @@ export default {
       deep: true,
       //  统一调用改变条件方法
       handler () {
-        this.page.currentPage = 1 // 只要条件变化 就变成第一页
-        this.changeCondition() // this 指向当前组件实例
+        // 只要条件变化 就变成第一页
+        this.page.currentPage = 1
+        // this 指向当前组件实例
+        this.changeCondition()
       }
     }
   },
@@ -133,6 +135,23 @@ export default {
     }
   },
   methods: {
+    delMaterial (id) {
+      this.$confirm('您确定删除此条数据?', '提示').then(() => {
+        // 如果进入了then 表示点击了确定
+        this.$axios({
+          method: 'delete',
+          // 请求地址
+          url: `/articles/${id}`
+        }).then(() => {
+          // 如果删除成功了
+          // 重新获取数据
+          // 应该带着条件和页码去加载
+          this.changeCondition() // 重新加载
+        }).catch(() => {
+          this.$message.error('删除文章失败')
+        })
+      })
+    },
     // 改变页码事件
     changePage (newPage) {
       // 最新的页码
