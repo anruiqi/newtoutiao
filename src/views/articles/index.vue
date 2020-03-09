@@ -32,17 +32,17 @@
       </el-form>
       <!-- 主体结构 -->
       <el-row class="total" type="flex" align="middle">
-          <span>找到快快快</span>
+          <span>共找到1000条符合条件的内容</span>
       </el-row>
-      显示数据
-      <div class="article-item" v-for="item in 200" :key="item">
+      <div class="article-item" v-for="item in list" :key="item.id.toString()">
           <!-- 左侧内容 -->
           <div class="left">
-              <img src="http://t8.baidu.com/it/u=1484500186,1503043093&fm=79&app=86&size=h300&n=0&g=4n&f=jpeg?sec=1584195847&t=0ac2ff76030c52d577318c55b148ac9f" alt="">
+            <!-- 设置文章封面信息 -->
+              <img :src="item.cover.images.length ? item.cover.images[0] : defaultImg" alt="">
               <div class="info">
-                <span>123</span>
-                <el-tag class="tag">已发表</el-tag>
-                <span class="date">131:51651</span>
+                <span>{{item.title}}</span>
+                <el-tag :type=" item.status | filterType"  class="tag">{{item.status | filterStatus }}</el-tag>
+                <span class="date">{{item.pubdate}}</span>
               </div>
           </div>
           <!-- 右侧内容 -->
@@ -68,8 +68,37 @@ export default {
         // 日期范围
         dateRange: []
       },
-      //   专门接收频道数据
-      channels: []
+      //  专门接收频道数据
+      channels: [],
+
+      list: [], // 获取文章列表数据
+      defaultImg: require('../../assets/img/adsadsad.jpg')
+    }
+  },
+  filters: {
+    filterStatus (value) {
+      switch (value) {
+        case 0:
+          return '草稿'
+        case 1:
+          return '待审核'
+        case 2:
+          return '已发表'
+        case 3:
+          return '审核失败'
+      }
+    },
+    filterType (value) {
+      switch (value) {
+        case 0:
+          return 'warning'
+        case 1:
+          return 'info'
+        case 2:
+          return ''
+        case 3:
+          return 'danger'
+      }
     }
   },
   methods: {
@@ -81,11 +110,24 @@ export default {
         //   获取频道接口返回的数据
         this.channels = result.data.channels
       })
+    },
+    // 获取文章列表
+    getArticles () {
+      this.$axios({
+      // 请求地址
+        url: '/articles'
+      }).then(result => {
+      // 获取文章列表
+        this.list = result.data.results
+      })
     }
   },
   created () {
     this.getChannels()
+    // 获取文章数据
+    this.getArticles()
   }
+
 }
 </script>
 
