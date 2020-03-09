@@ -20,8 +20,8 @@
           </el-form-item>
           <!-- 选择器 -->
           <el-form-item label="频道类型:">
-              <el-select @change="changeCondition" placeholder="请选择频道" v-model="searchForm.channel_id">
-                <!-- <el-select placeholder="请选择频道" v-model="searchForm.channel_id"> -->
+              <!-- <el-select @change="changeCondition" placeholder="请选择频道" v-model="searchForm.channel_id"> -->
+                <el-select placeholder="请选择频道" v-model="searchForm.channel_id">
                   <!-- 下拉选项 -->
                   <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
@@ -52,6 +52,17 @@
               <span><i class="el-icon-delete"></i>删除</span>
           </div>
       </div>
+       <!-- 放置分页组件 -->
+       <el-row type='flex' justify="center" style='height:80px' align="middle">
+             <!-- 分页组件 -->
+             <el-pagination
+              :current-page="page.currentPage"
+              :page-size="page.pageSize"
+              :total="page.total"
+              @current-change="changePage"
+               background  layout='prev,pager,next'>
+             </el-pagination>
+       </el-row>
   </el-card>
 </template>
 
@@ -59,11 +70,14 @@
 export default {
   data () {
     return {
-      // page: {
-      //   currentPage: 1, // 当前页码
-      //   pageSize: 10, // 接口要求每页 10-50条之间
-      //   total: 0 // 总数
-      // },
+      page: {
+        // 当前页码
+        currentPage: 1,
+        // 接口要求每页 10-50条之间
+        pageSize: 10,
+        // 总数
+        total: 0
+      },
       // 定义表单数据对象
       searchForm: {
         //   文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部 / 先将 5 定义成 全部
@@ -83,9 +97,12 @@ export default {
   },
   watch: {
     searchForm: {
+      // 深度检测searchForm中的数据变化
       deep: true,
+      //  统一调用改变条件方法
       handler () {
-        this.changeCondition()
+        this.page.currentPage = 1 // 只要条件变化 就变成第一页
+        this.changeCondition() // this 指向当前组件实例
       }
     }
   },
@@ -116,15 +133,29 @@ export default {
     }
   },
   methods: {
+    // 改变页码事件
+    changePage (newPage) {
+      // 最新的页码
+      this.page.currentPage = newPage
+      // 直接调用改变事件的方法
+      this.changeCondition()
+    },
     changeCondition () {
+      // 当触发此方法的时候 表单数据已经变成最新的了
+      // 组装条件 params
       const params = {
+        // 如果条件改变 就回到第一页
+        page: this.page.currentPage,
+        per_page: this.page.pageSize,
         // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
-        status: this.searchForm.status === 5 ? null : this.searchForm.status, // 5 是我们前端虚构的
-        channel_id: this.searchForm.channel_id, // 就是表单的数据
+        status: this.searchForm.status === 5 ? null : this.searchForm.status,
+        // 就是表单的数据
+        channel_id: this.searchForm.channel_id,
         begin_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
         end_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
       }
-      this.getArticles(params)
+      // 通过接口传入
+      this.getArticles(params) // 直接调用获取方法
     },
     //   获取频道数据
     getChannels () {
