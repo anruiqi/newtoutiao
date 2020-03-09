@@ -32,8 +32,8 @@
         </el-form-item>
         <el-form-item>
           <!-- 放置两个按钮 -->
-          <el-button @click="publish" type='primary'>发表</el-button>
-          <el-button>存入草稿</el-button>
+          <el-button @click="publish(false)" type='primary'>发表</el-button>
+          <el-button @click="publish(true)">存入草稿</el-button>
         </el-form-item>
 
       </el-form>
@@ -79,9 +79,28 @@ export default {
         this.channels = result.data.channels
       })
     },
-    publish () {
+    publish (draft) {
       // 调用 validate
-      this.$refs.myForm.validate()
+      this.$refs.myForm.validate().then(() => {
+        this.$axios({
+          // 请求类型
+          method: 'post',
+          //   请求地址
+          url: '/articles',
+          //   query参数
+          params: { draft },
+          //   请求体body参数
+          data: this.publishForm
+        }).then(() => {
+          // 发布成功
+          this.$message.success('发布成功')
+          //   页面跳转到文章列表
+          this.$router.push('/home/articles')
+        }).catch(() => {
+          // 发布失败
+          this.$message.error('发布失败')
+        })
+      })
     }
   },
   created () {
