@@ -10,7 +10,7 @@
           <!-- 单选框组 -->
           <el-form-item label="文章状态:">
               <!-- 单选框选项 -->
-              <el-radio-group v-model="searchForm.status">
+              <el-radio-group v-model="searchForm.status" @change="changeCondition">
                   <el-radio :label="5">全部</el-radio>
                   <el-radio :label="0">草稿</el-radio>
                   <el-radio :label="1">待审核</el-radio>
@@ -20,14 +20,15 @@
           </el-form-item>
           <!-- 选择器 -->
           <el-form-item label="频道类型:">
-              <el-select placeholder="请选择频道" v-model="searchForm.channel_id">
+              <el-select @change="changeCondition" placeholder="请选择频道" v-model="searchForm.channel_id">
+                <!-- <el-select placeholder="请选择频道" v-model="searchForm.channel_id"> -->
                   <!-- 下拉选项 -->
                   <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
           </el-form-item>
           <!-- 日期范围选择组件 -->
           <el-form-item label="日期范围:">
-              <el-date-picker v-model="searchForm.dateRange" type='daterange'></el-date-picker>
+              <el-date-picker type='daterange'  value-format="yyyy-MM-dd" v-model="searchForm.dateRange"></el-date-picker>
           </el-form-item>
       </el-form>
       <!-- 主体结构 -->
@@ -58,6 +59,11 @@
 export default {
   data () {
     return {
+      // page: {
+      //   currentPage: 1, // 当前页码
+      //   pageSize: 10, // 接口要求每页 10-50条之间
+      //   total: 0 // 总数
+      // },
       // 定义表单数据对象
       searchForm: {
         //   文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部 / 先将 5 定义成 全部
@@ -73,6 +79,14 @@ export default {
 
       list: [], // 获取文章列表数据
       defaultImg: require('../../assets/img/adsadsad.jpg')
+    }
+  },
+  watch: {
+    searchForm: {
+      deep: true,
+      handler () {
+        this.changeCondition()
+      }
     }
   },
   filters: {
@@ -102,6 +116,16 @@ export default {
     }
   },
   methods: {
+    changeCondition () {
+      const params = {
+        // 文章状态，0-草稿，1-待审核，2-审核通过，3-审核失败，4-已删除，不传为全部
+        status: this.searchForm.status === 5 ? null : this.searchForm.status, // 5 是我们前端虚构的
+        channel_id: this.searchForm.channel_id, // 就是表单的数据
+        begin_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length ? this.searchForm.dateRange[0] : null,
+        end_pubdate: this.searchForm.dateRange && this.searchForm.dateRange.length > 1 ? this.searchForm.dateRange[1] : null
+      }
+      this.getArticles(params)
+    },
     //   获取频道数据
     getChannels () {
       this.$axios({
@@ -112,10 +136,11 @@ export default {
       })
     },
     // 获取文章列表
-    getArticles () {
+    getArticles (params) {
       this.$axios({
       // 请求地址
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(result => {
       // 获取文章列表
         this.list = result.data.results
