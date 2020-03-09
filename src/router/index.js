@@ -23,17 +23,19 @@ const routes = [
         // 默认二级路由组件
         component: SecondHome
       }, {
-        // 评论列表地址
+        // 评论列表页面
         path: 'comment',
-        // 按需加载
         component: () => import('@/views/comment')
       }, {
-        // 二级路由地址
+        // 素材列表页面
         path: 'material',
         component: () => import('@/views/material')
-      }, {
+      }, { // 文章列表页面
         path: 'articles',
         component: () => import('@/views/articles')
+      }, { // 发布文章页面
+        path: 'publish',
+        component: () => import('@/views/publish')
       }
     ]
   },
