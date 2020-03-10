@@ -16,7 +16,7 @@
         </el-form-item>
         <el-form-item label="封面" prop="cover" style="margin-top:120px;">
           <!-- 单选框组 -->
-          <el-radio-group v-model="publishForm.cover.type">
+          <el-radio-group v-model="publishForm.cover.type" @change="changeType">
              <el-radio :label="1">单图</el-radio>
              <el-radio :label="3">三图</el-radio>
              <el-radio :label="0">无图</el-radio>
@@ -71,6 +71,17 @@ export default {
     }
   },
   methods: {
+    // 改变类型事件
+    changeType () {
+      if (this.publishForm.cover.type === 1) {
+        // 单图模式
+        this.publishForm.cover.images = ['']
+      } else if (this.publishForm.cover.type === 3) {
+        this.publishForm.cover.images = ['', '', '']
+      } else {
+        this.publishForm.cover.images = []
+      }
+    },
     getArticleById (id) {
       //  获取数据
       this.$axios({
