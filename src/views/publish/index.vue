@@ -23,6 +23,8 @@
              <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
         </el-form-item>
+        <!-- 封面组件 -->
+        <cover-image @selectTwoImg="receiveImg" :list="publishForm.cover.images"></cover-image>
         <el-form-item label="频道" prop="channel_id">
            <!-- select选择器 -->
               <el-select placeholder="请选择频道" v-model="publishForm.channel_id">
@@ -71,6 +73,11 @@ export default {
     }
   },
   methods: {
+    // 接收cover-image传递过来的数据
+    receiveImg (url, index) {
+      // 删除替换元素
+      this.publishForm.cover.images.splice(index, 1, url)
+    },
     // 改变类型事件
     changeType () {
       if (this.publishForm.cover.type === 1) {
