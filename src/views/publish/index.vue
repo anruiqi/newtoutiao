@@ -72,6 +72,34 @@ export default {
       }
     }
   },
+  // 采用watch来监听 $route
+  watch: {
+    // watch是监听data中的数据变化
+    $route: function (to, from) {
+      if (to.params.articleId) {
+        // 获取数据
+        this.getArticleById(to.params.articleId) // 获取文章id
+      } else {
+        // 如果不存在应该设置表单数据为空
+        // 如果是发布文章就设置为空对象
+        this.publishForm = {
+          // 文章标题
+          title: '',
+          // 文章内容
+          content: '',
+          cover: {
+            // -1 是自动 0是无图  1 是单图 3 是三图
+            type: 0,
+            // 字符串数组
+            images: []
+          },
+          // 频道id
+          channel_id: null
+        }
+      }
+    }
+
+  },
   methods: {
     // 接收cover-image传递过来的数据
     receiveImg (url, index) {
