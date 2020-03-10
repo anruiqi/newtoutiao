@@ -48,12 +48,12 @@
           </div>
           <!-- 右侧内容 -->
           <div class="right">
-              <span><i class="el-icon-edit"></i>修改</span>
-                        <span @click="delMaterial(item.id.toString())"><i class="el-icon-delete"></i> 删除</span>
+              <span  @click="$router.push(`/home/publish/${item.id.toString()}`)"><i class="el-icon-edit"></i>修改</span>
+              <span @click="delMaterial(item.id.toString())"><i class="el-icon-delete"></i> 删除</span>
           </div>
       </div>
        <!-- 放置分页组件 -->
-       <el-row type='flex' justify="center" style='height:80px' align="middle">
+      <el-row type='flex' justify="center" style='height:80px' align="middle">
              <!-- 分页组件 -->
              <el-pagination
               :current-page="page.currentPage"
@@ -135,6 +135,11 @@ export default {
     }
   },
   methods: {
+    // 跳转到发布页面
+    toPublish (item) {
+      this.$router.push('/home/publish')
+    },
+    // 删除文章
     delMaterial (id) {
       this.$confirm('您确定删除此条数据?', '提示').then(() => {
         // 如果进入了then 表示点击了确定
@@ -194,6 +199,8 @@ export default {
       }).then(result => {
       // 获取文章列表
         this.list = result.data.results
+        // 分页总数
+        this.page.total = result.data.total_count
       })
     }
   },
