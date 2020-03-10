@@ -70,6 +70,14 @@ export default {
     }
   },
   methods: {
+    getArticleById (id) {
+      //  获取数据
+      this.$axios({
+        url: `/articles/${id}` // 请求地址
+      }).then(result => {
+        this.publishForm = result.data // 将数据赋值给表单数据
+      })
+    },
     getChannels () {
       this.$axios({
         // 获取频道数据
@@ -82,14 +90,15 @@ export default {
     publish (draft) {
       // 调用 validate
       this.$refs.myForm.validate().then(() => {
+        const { articleId } = this.$route.params
         this.$axios({
-          // 请求类型
-          method: 'post',
-          //   请求地址
-          url: '/articles',
-          //   query参数
-          params: { draft },
-          //   请求体body参数
+          // 根据场景决定用什么地址
+          url: articleId ? `/articles/${articleId}` : '/articles',
+          // 根据场景决定用什么类型
+          method: articleId ? 'put' : 'post',
+          params: {
+            draft
+          },
           data: this.publishForm
         }).then(() => {
           // 发布成功
@@ -100,11 +109,33 @@ export default {
           // 发布失败
           this.$message.error('发布失败')
         })
+        // this.$axios({
+        //   // 请求类型
+        //   method: 'post',
+        //   //   请求地址
+        //   url: '/articles',
+        //   //   query参数
+        //   params: { draft },
+        //   //   请求体body参数
+        //   data: this.publishForm
+        // }).then(() => {
+        //   // 发布成功
+        //   this.$message.success('发布成功')
+        //   //   页面跳转到文章列表
+        //   this.$router.push('/home/articles')
+        // }).catch(() => {
+        //   // 发布失败
+        //   this.$message.error('发布失败')
+        // })
       })
     }
   },
   created () {
     this.getChannels()
+    // articleId是 路由参数中定义的
+    const { articleId } = this.$route.params
+    // && 运算符 如果前面为true 才会执行后面的逻辑
+    articleId && this.getArticleById(articleId)
   }
 }
 </script>
