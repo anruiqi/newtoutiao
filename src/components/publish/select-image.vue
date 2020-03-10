@@ -1,10 +1,7 @@
 <template>
-  <!-- 还是通过页签形式来显示 el-tabs -->
    <el-tabs v-model="activeName">
-       <!-- name不能重复 name表示当前标签页的标识 -->
     <el-tab-pane label="素材库" name="material">
         <!-- 查询全部的素材 -->
-        <!-- v-for循环遍历list数据 -->
         <div class='select-image-list'>
             <!-- 循环 -->
             <el-card v-for="item in list" :key="item.id" class='img-card'>
@@ -15,7 +12,6 @@
         <!-- 分页 -->
         <el-row type='flex' justify="center" style="height:80px" align="middle">
                <!-- 分页组件 -->
-               <!-- layout特别注意 名字不能写错 写错全死了 -->
                <el-pagination background  layout="prev, pager, next"
                :total="page.total"
                :current-page="page.currentPage"
@@ -24,7 +20,11 @@
                ></el-pagination>
         </el-row>
     </el-tab-pane>
-    <el-tab-pane label="上传素材" name="upload">上传素材</el-tab-pane>
+    <el-tab-pane label="上传素材" name="upload">
+      <el-upload action="" class='upload-img' :http-request="uploadImg">
+        <i class='el-icon-plus'></i>
+      </el-upload>
+    </el-tab-pane>
   </el-tabs>
 </template>
 
@@ -77,6 +77,26 @@ export default {
     //   需要将url参数传递给上层组件
     // 将url参数传出去
       this.$emit('selectOneImg', url)
+    },
+    // 上传素材
+    uploadImg (params) {
+    // 实例化
+      const data = new FormData()
+      // 加入文件参数
+      data.append('image', params.file)
+      // 发送上传请求
+      this.$axios({
+      // 请求地址
+        url: '/user/images',
+        // 请求类型
+        method: 'post',
+        data
+      }).then(result => {
+      // 将url参数传出去
+        this.$emit('selectOneImg', result.data.url)
+      }).catch(() => {
+        this.$message.error('上传素材失败')
+      })
     }
   },
   created () {
@@ -100,5 +120,15 @@ export default {
             height: 100%;
         }
     }
+}
+.upload-img {
+  display: flex;
+  justify-content: center;
+  i {
+    font-size: 20px;
+    padding: 50px;
+    border:2px dashed #ccc;
+    border-radius: 4px;
+  }
 }
 </style>
