@@ -11,9 +11,10 @@
         </el-form-item>
         <el-form-item label="内容" prop="content">
           <!-- 多行输入 -->
-          <el-input v-model="publishForm.content" placeholder="请输入您的内容" type='textarea' :rows="4"></el-input>
+          <!-- 将el-input换成 quill-editor即可 -->
+          <quill-editor v-model="publishForm.content" style="height:300px" ></quill-editor>
         </el-form-item>
-        <el-form-item label="封面" prop="cover">
+        <el-form-item label="封面" prop="cover" style="margin-top:120px;">
           <!-- 单选框组 -->
           <el-radio-group v-model="publishForm.cover.type">
              <el-radio :label="1">单图</el-radio>
