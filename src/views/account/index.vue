@@ -24,7 +24,9 @@
         </el-form-item>
       </el-form>
       <!-- 头像 -->
-      <img class='head-upload' :src="formData.photo ? formData.photo : defaultImg" alt="">
+      <el-upload action="" :http-request="uploadImg" :show-file-list="false">
+        <img class='head-upload' :src="formData.photo ? formData.photo : defaultImg" alt="">
+      </el-upload>
   </el-card>
 </template>
 
@@ -79,6 +81,19 @@ export default {
         }).catch(() => {
           this.$message.error('保存用户信息失败')
         })
+      })
+    },
+    // 上传图片
+    uploadImg (params) {
+      // params.file
+      const data = new FormData()
+      data.append('photo', params.file)
+      this.$axios({
+        url: '/user/photo',
+        method: 'patch',
+        data // 要传递的参数
+      }).then(result => {
+        this.formData.photo = result.data.photo
       })
     }
   },
