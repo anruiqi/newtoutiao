@@ -36,6 +36,9 @@ const routes = [
       }, { // 发布文章页面
         path: 'publish/:articleId?',
         component: () => import('@/views/publish')
+      }, { // 账户信息页面
+        path: 'account',
+        component: () => import('@/views/account')
       }
     ]
   },
